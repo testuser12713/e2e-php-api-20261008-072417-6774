@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Http\ApiException;
 use App\Http\Request;
 use App\Http\Response;
+use App\Repository\BookmarkCreator;
+use App\Validation\BookmarkInput;
 use PDO;
 
 final class CreateBookmarkController
@@ -20,6 +21,12 @@ final class CreateBookmarkController
      */
     public function handle(Request $request, array $params): Response
     {
-        throw new ApiException('not_implemented', 'POST /bookmarks is not implemented yet.', 501);
+        $payload = $request->json();
+        $input = BookmarkInput::validate($payload);
+
+        $creator = new BookmarkCreator($this->pdo);
+        $bookmark = $creator->insert($input['url'], $input['title'], $input['tags']);
+
+        return Response::json($bookmark, 201);
     }
 }
