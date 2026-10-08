@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Http\ApiException;
 use App\Http\Request;
 use App\Http\Response;
+use App\Repository\BookmarkLister;
 use PDO;
 
 final class ListBookmarksController
@@ -20,6 +20,10 @@ final class ListBookmarksController
      */
     public function handle(Request $request, array $params): Response
     {
-        throw new ApiException('not_implemented', 'GET /bookmarks is not implemented yet.', 501);
+        $lister = new BookmarkLister($this->pdo);
+
+        return Response::json([
+            'bookmarks' => $lister->all($request->query('tag')),
+        ]);
     }
 }
