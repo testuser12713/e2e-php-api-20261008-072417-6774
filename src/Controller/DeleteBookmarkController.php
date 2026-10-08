@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Http\ApiException;
 use App\Http\Request;
 use App\Http\Response;
+use App\Repository\BookmarkDeleter;
 use PDO;
 
 final class DeleteBookmarkController
@@ -20,6 +21,13 @@ final class DeleteBookmarkController
      */
     public function handle(Request $request, array $params): Response
     {
-        throw new ApiException('not_implemented', 'DELETE /bookmarks/{id} is not implemented yet.', 501);
+        $id = (int) ($params['id'] ?? 0);
+
+        $deleter = new BookmarkDeleter($this->pdo);
+        if (!$deleter->delete($id)) {
+            throw new ApiException('not_found', 'The requested bookmark was not found.', 404);
+        }
+
+        return Response::noContent();
     }
 }
