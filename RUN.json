@@ -1,0 +1,32 @@
+{
+    "runcontract": 1,
+    "services": [
+        {
+            "name": "api",
+            "dir": ".",
+            "stack": "php",
+            "kind": "server",
+            "install": [
+                ["composer", "install", "--no-interaction", "--no-progress"]
+            ],
+            "test": [
+                ["php", "vendor/bin/phpunit"]
+            ],
+            "start": [
+                "php", "-S", "0.0.0.0:${PORT}", "-t", "public", "public/index.php"
+            ],
+            "port": 8080,
+            "health": {
+                "path": "/health",
+                "expect_status": [200]
+            },
+            "env": {
+                "DB_PATH": {
+                    "dev": "var/bookmarks.sqlite",
+                    "not_secret": true,
+                    "why": "Filesystem path to the SQLite database file, not a secret; the file is created and migrated at startup."
+                }
+            }
+        }
+    ]
+}
