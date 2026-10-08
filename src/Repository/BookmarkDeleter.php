@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Http\ApiException;
 use PDO;
 
 final class BookmarkDeleter
@@ -15,6 +14,9 @@ final class BookmarkDeleter
 
     public function delete(int $id): bool
     {
-        throw new ApiException('not_implemented', 'Deleting a bookmark is not implemented yet.', 501);
+        $statement = $this->pdo->prepare('DELETE FROM bookmarks WHERE id = :id');
+        $statement->execute([':id' => $id]);
+
+        return $statement->rowCount() > 0;
     }
 }
